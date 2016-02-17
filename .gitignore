@@ -1,0 +1,7 @@
+# Created by https://www.gitignore.io
+
+# Sub directories
+data/
+
+# RC files
+*.rc

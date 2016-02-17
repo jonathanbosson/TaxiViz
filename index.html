@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/colorbrewer.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <!--modules css-->
+        <link rel="stylesheet" href="css/area.css">
+        <link rel="stylesheet" href="css/map.css">
+
+    </head>
+    
+
+        <!--[if lt IE 7]>
+           <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+       <![endif]-->
+
+        <!-- Wrap all page content here -->
+        <div id="wrap">
+
+            <!-- Fixed navbar -->
+            <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">TaxiViz</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Begin page content -->
+
+
+            <div class="container">
+                <!-- row of columns -->
+
+                <br><br><br>
+
+                <div class="row">
+                    <div class="col-md-6" id ="area" style ="height: 90vh"></div>   
+                    <div class="col-md-6" id ="map" style ="height: 90vh">
+                       <p>
+                            <label>
+                                Magnitude > <span id="slider-value">4</span>
+                            </label>
+                            <input type="range" min="4" max="7" value="4" id="slider">
+                            <input type="number" id="k" value="4" style="float:right;"> 
+                            <input type="button" value="cluster" onclick="map1.cluster()" style="float:right;"/>
+                            <label id="info" style="float:right;"></label>
+                        </p> 
+                        
+                    </div>
+
+                </div>                
+            </div>
+        </div>
+
+
+        <script src="js/vendor/jquery.min.js"></script>
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/vendor/d3.v3.min.js"></script>
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="js/vendor/topojson.v1.min.js"></script>
+        <script src="js/vendor/underscore-min.js"></script>
+        <script src="js/vendor/colorbrewer.js"></script>
+
+        <!--modules js-->
+        <script src="js/kmeans.js"></script>
+        <script src="js/area.js"></script>
+        <script src="js/map.js"></script>
+        <script src="js/main.js"></script>
+
+    
+</html>
+

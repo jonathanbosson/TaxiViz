@@ -1,0 +1,26 @@
+svg {
+  font: 10px sans-serif;
+}
+
+path {
+  fill: orange;
+}
+
+.dot {
+    fill: orange;
+    /*fill-opacity: 0.5;*/
+    /*stroke: #FFF;*/
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
