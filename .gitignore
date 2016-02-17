@@ -1,5 +1,6 @@
 # Data files
-.csv
+data/taxi_sthlm_march_2013.csv
+data/data.csv
 
 # RC files
 *.rc
