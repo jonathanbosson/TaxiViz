@@ -43,8 +43,8 @@ function map(data) {
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
 
     //Loads geo data
-    d3.json("data/world-topo.json", function (error, world) {
-        var countries = topojson.feature(world, world.objects.countries).features;
+    d3.json("data/sverige-topo.json", function (error, world) {
+        var countries = topojson.feature(world, world.objects.sverige).features;
         draw(countries);
     });
 
