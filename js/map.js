@@ -1,4 +1,9 @@
 function map(data) {
+	var kmeansArray = [];
+	//var color = d3.scale.category10();
+	var color = ["green","blue","grey","yellow"];
+	var cc = [];
+	var format = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ");
 
     var zoom = d3.behavior.zoom()
             .scaleExtent([0.5, 8])
@@ -38,19 +43,18 @@ function map(data) {
             .center([19, 59])
             .scale(15000);
 
-    //Creates a new geographic path generator and assing the projection        
+    //Creates a new geographic path generator and assing the projection
     var path = d3.geo.path().projection(projection);
 
     //Formats the data in a feature collection trougth geoFormat()
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
-
     //Loads geo data
     d3.json("data/swe_mun.topojson", function (error, data) {
         var countries = topojson.feature(data, data.objects.swe_mun).features;
         draw(countries);
     });
 
-    //Calls the filtering function 
+    //Calls the filtering function
     d3.select("#slider").on("input", function () {
         filterMag(this.value, data);
     });
@@ -88,6 +92,7 @@ function map(data) {
                 .style("fill", "lightgray")
                 .style("stroke", "white");
 
+
         //draw point        
         var point =  g.selectAll("circle")
             .data(geoData.features)
@@ -112,7 +117,7 @@ function map(data) {
                 return 1;
             })
     }
-    
+
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
         //Complete the code
@@ -128,11 +133,27 @@ function map(data) {
             else
                 return 0;
             })
+
     };
 
-    //Calls k-means function and changes the color of the points  
+    //Calls k-means function and changes the color of the points
     this.cluster = function () {
-        //Complete the code
+        var k = 4;
+        var kmeansRes = kmeans(kmeansArray,k);
+        //initialize the cluster colors
+		// add index to properties, and check if kmeansRes.id is same as data id.
+		for (j = 0; j < k; j++) {
+			data.forEach(function(d, i) {
+				if (kmeansRes[i] == j) {
+					cc[i] = color[j];
+
+				}else
+					cc[i] = "orange";
+			});
+		}
+		console.log(cc);
+		d3.selectAll(".point")
+		.style("fill", function(d, i){ return cc[i]; });
     };
 
     //Zoom and panning method
