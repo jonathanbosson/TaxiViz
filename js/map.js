@@ -12,11 +12,13 @@ function map(data) {
 
     var curr_mag = 4;
 
-    var format = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ");
+   //var format = d3.time.format.utc("%Y-%m-%d %H%M%S");
+    //2013-03-08 18:06:15
+    
 
-    var timeExt = d3.extent(data.map(function (d) {
+   /* var timeExt = d3.extent(data.map(function (d) {
         return format.parse(d.time);
-    }));
+    }));*/
 
     var filterdData = data;
 
@@ -33,8 +35,8 @@ function map(data) {
 
     //Sets the map projection
     var projection = d3.geo.mercator()
-            .center([8.25, 56.8])
-            .scale(700);
+            .center([19, 59])
+            .scale(15000);
 
     //Creates a new geographic path generator and assing the projection        
     var path = d3.geo.path().projection(projection);
@@ -43,8 +45,8 @@ function map(data) {
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
 
     //Loads geo data
-    d3.json("data/sverige-topo.json", function (error, world) {
-        var countries = topojson.feature(world, world.objects.sverige).features;
+    d3.json("data/swe_mun.topojson", function (error, data) {
+        var countries = topojson.feature(data, data.objects.swe_mun).features;
         draw(countries);
     });
 
@@ -58,6 +60,18 @@ function map(data) {
         var data = [];
         array.map(function (d, i) {
             //Complete the code
+            data.push(
+            { 
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point", 
+                    "coordinates": [d.x_coord, d.y_coord]},
+                "properties": {
+                    "id" : d.id,
+                    "date" : d.date,
+                    "depth" : d.hired,
+                }
+            });
         });
         return data;
     }
@@ -75,17 +89,45 @@ function map(data) {
                 .style("stroke", "white");
 
         //draw point        
-        var point //Complete the code
+        var point =  g.selectAll("circle")
+            .data(geoData.features)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) { return projection(d.geometry.coordinates)[0];})
+            .attr("cy", function(d) { return projection(d.geometry.coordinates)[1]; })
+            .attr("r", 5)
+            .style("fill", "orange")
+            .classed("pin", true);
     };
 
     //Filters data points according to the specified magnitude
     function filterMag(value) {
         //Complete the code
+        magnitude = value;
+        
+        svg.selectAll("circle").data(data).style("opacity", function(d){
+            if(d.mag < magnitude)
+                return 0;
+            else
+                return 1;
+            })
     }
     
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
         //Complete the code
+        
+        startTime = value[0].getTime();
+        endTime = value[1].getTime();
+        
+        svg.selectAll("circle").data(data).style("opacity", function(d){
+            //d.properties.time is a string, convert to a date
+            var date = new Date(d.time);
+            if(startTime <= date.getTime() && date.getTime() <= endTime)
+                return 1;
+            else
+                return 0;
+            })
     };
 
     //Calls k-means function and changes the color of the points  
