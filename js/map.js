@@ -3,7 +3,7 @@ function map(data) {
 	//var color = d3.scale.category10();
 	var color = ["green","blue","grey","yellow"];
 	var cc = [];
-	var format = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ");
+	var format = d3.time.format.utc("%Y-%m-%d %H%M%S");
 
     var zoom = d3.behavior.zoom()
             .scaleExtent([0.5, 8])
@@ -40,40 +40,103 @@ function map(data) {
 
     //Sets the map projection
     var projection = d3.geo.mercator()
-            .center([19, 59])
-            .scale(15000);
+            .center([18.0658, 59.3279])
+            .scale(220000);
 
     //Creates a new geographic path generator and assing the projection
     var path = d3.geo.path().projection(projection);
 
-    //Formats the data in a feature collection trougth geoFormat()
+    //Formats the data in a feature collection through geoFormat()
+    
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
     //Loads geo data
-    d3.json("data/swe_mun.topojson", function (error, data) {
+    /*
+    d3.json("json/swe_mun.topojson", function (error, data) {
         var countries = topojson.feature(data, data.objects.swe_mun).features;
         draw(countries);
     });
+    */
 
+    
+    var googlemap;
+    initMap();
+    //googlemap.data.loadGeoJson('json/geoTest.json');
+
+    dataFeed_callback(geoData);
+    
+    console.log(geoData.features);
     //Calls the filtering function
     d3.select("#slider").on("input", function () {
         filterMag(this.value, data);
     });
 
+
+    function dataFeed_callback(geoData) {
+        googlemap.data.addGeoJson(geoData);
+    }
+
+    function initMap(){
+        googlemap = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 59.3279, lng: 18.0658},
+            zoom: 12,
+            styles: [{
+            featureType: 'poi',
+            stylers: [{ visibility: 'off' }]  // Turn off points of interest.
+            }, {
+            featureType: 'transit.station',
+            stylers: [{ visibility: 'off' }]  // Turn off bus stations, train stations, etc.
+            }],
+            disableDoubleClickZoom: true
+        });
+                
+        googlemap.data.setStyle(function(feature) {
+            var hired = feature.getProperty('hired');
+            return {
+              icon: getCircle(hired)
+            };
+        });
+        
+    }
+
+    function getCircle(hired) {
+        var circle;
+        if (hired == 1) { 
+          circle = {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: 'red',
+            fillOpacity: .2,
+            scale: 3*hired+3,
+            strokeColor: 'white',
+            strokeWeight: .5
+          };
+        } else {
+            circle = {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: 'blue',
+            fillOpacity: .5,
+            scale: 3*hired+3,
+            strokeColor: 'white',
+            strokeWeight: .5
+          };
+        }
+          return circle;
+    }
+
+
     //Formats the data in a feature collection
     function geoFormat(array) {
         var data = [];
         array.map(function (d, i) {
-            //Complete the code
             data.push(
             { 
                 "type": "Feature",
                 "geometry": {
                     "type": "Point", 
-                    "coordinates": [d.x_coord, d.y_coord]},
+                    "coordinates": [Number(d.x_coord), Number(d.y_coord)]},
                 "properties": {
-                    "id" : d.id,
-                    "date" : d.date,
-                    "depth" : d.hired,
+                    "id" : Number(d.id),
+                    "date" : Date(d.date),
+                    "hired" : Number(d.hired),
                 }
             });
         });
@@ -94,13 +157,13 @@ function map(data) {
 
 
         //draw point        
-        var point =  g.selectAll("circle")
+        var point =  g.selectAll("path")
             .data(geoData.features)
             .enter()
             .append("circle")
             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0];})
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1]; })
-            .attr("r", 5)
+            .attr("r", 1)
             .style("fill", "orange")
             .classed("pin", true);
     };
