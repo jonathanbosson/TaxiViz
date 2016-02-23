@@ -3,7 +3,7 @@ function map(data) {
 	//var color = d3.scale.category10();
 	var color = ["green","blue","grey","yellow"];
 	var cc = [];
-	var format = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ");
+	var format = d3.time.format.utc("%Y-%m-%dT%H%M%S");
 
     var zoom = d3.behavior.zoom()
             .scaleExtent([0.5, 8])
@@ -17,13 +17,13 @@ function map(data) {
 
     var curr_mag = 4;
 
-   //var format = d3.time.format.utc("%Y-%m-%d %H%M%S");
+    var format = d3.time.format.utc("%Y-%m-%d%H%M%S");
     //2013-03-08 18:06:15
     
 
-   /* var timeExt = d3.extent(data.map(function (d) {
-        return format.parse(d.time);
-    }));*/
+   var timeExt = d3.extent(data.map(function (d) {
+        return format.parse(d.date);
+    }));
 
     var filterdData = data;
 
@@ -49,7 +49,7 @@ function map(data) {
     //Formats the data in a feature collection trougth geoFormat()
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
     //Loads geo data
-    d3.json("data/swe_mun.topojson", function (error, data) {
+    d3.json("topojson/swe_mun.topojson", function (error, data) {
         var countries = topojson.feature(data, data.objects.swe_mun).features;
         draw(countries);
     });
@@ -100,7 +100,7 @@ function map(data) {
             .append("circle")
             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0];})
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1]; })
-            .attr("r", 5)
+            .attr("r", 1)
             .style("fill", "orange")
             .classed("pin", true);
     };
