@@ -49,7 +49,7 @@ function map(data) {
     //Formats the data in a feature collection trougth geoFormat()
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
     //Loads geo data
-    d3.json("data/swe_mun.topojson", function (error, data) {
+    d3.json("topojson/swe_mun.topojson", function (error, data) {
         var countries = topojson.feature(data, data.objects.swe_mun).features;
         draw(countries);
     });
@@ -139,9 +139,13 @@ function map(data) {
     //Calls k-means function and changes the color of the points
     this.cluster = function () {
         var k = 4;
-        var kmeansRes = kmeans(kmeansArray,k);
+        console.log('orig. Data:', data);
+        //var kmeansRes = kmeans(kmeansArray,k);
+        var opticsRes = optics(data,10, 10);
+        
         //initialize the cluster colors
 		// add index to properties, and check if kmeansRes.id is same as data id.
+		/*
 		for (j = 0; j < k; j++) {
 			data.forEach(function(d, i) {
 				if (kmeansRes[i] == j) {
@@ -153,7 +157,7 @@ function map(data) {
 		}
 		console.log(cc);
 		d3.selectAll(".point")
-		.style("fill", function(d, i){ return cc[i]; });
+		.style("fill", function(d, i){ return cc[i]; });*/
     };
 
     //Zoom and panning method
