@@ -1,7 +1,198 @@
 function map(data) {
-	var kmeansArray = [];
-	//var color = d3.scale.category10();
-	var color = ["green","blue","grey","yellow"];
+	var googleStyle = 
+
+[
+    {
+        "featureType": "water",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#d3d3d3"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {
+                "color": "#808080"
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#b3b3b3"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#ffffff"
+            },
+            {
+                "weight": 1.8
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "color": "#d7d7d7"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#ebebeb"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#a7a7a7"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#efefef"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#696969"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#737373"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "color": "#d6d6d6"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {},
+    {
+        "featureType": "poi",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#dadada"
+            }
+        ]
+    }
+]
+
+;
+
+
+
+    var colors = colorbrewer.Set3[10];
+    var color = ["green","blue","grey","yellow"];
 	var cc = [];
 	var format = d3.time.format.utc("%Y-%m-%d %H%M%S");
 
@@ -28,7 +219,7 @@ function map(data) {
     var filterdData = data;
 
     //Sets the colormap
-    var colors = colorbrewer.Set3[10];
+   
 
     //Assings the svg canvas to the map div
     var svg = d3.select("#map").append("svg")
@@ -47,139 +238,16 @@ function map(data) {
     var path = d3.geo.path().projection(projection);
 
     //Formats the data in a feature collection through geoFormat()
-    
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
-    //Loads geo data
-    /*
-    d3.json("json/swe_mun.topojson", function (error, data) {
-        var countries = topojson.feature(data, data.objects.swe_mun).features;
-        draw(countries);
-    });
-    */
+    console.log("geoData stored")
 
     
     var googlemap;
-    initMap();
-    //googlemap.data.loadGeoJson('json/geoTest.json');
+    initMap(googleStyle);
+    console.log("Map initiated")
 
     dataFeed_callback(geoData);
-    
-    console.log(geoData.features);
-    //Calls the filtering function
-    d3.select("#slider").on("input", function () {
-        filterMag(this.value, data);
-    });
-
-
-    function dataFeed_callback(geoData) {
-        googlemap.data.addGeoJson(geoData);
-    }
-
-    function initMap(){
-        googlemap = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 59.3279, lng: 18.0658},
-            zoom: 12,
-            styles: [{
-            featureType: 'poi',
-            stylers: [{ visibility: 'off' }]  // Turn off points of interest.
-            }, {
-            featureType: 'transit.station',
-            stylers: [{ visibility: 'off' }]  // Turn off bus stations, train stations, etc.
-            }],
-            disableDoubleClickZoom: true
-        });
-                
-        googlemap.data.setStyle(function(feature) {
-            var hired = feature.getProperty('hired');
-            return {
-              icon: getCircle(hired)
-            };
-        });
-        
-    }
-
-    function getCircle(hired) {
-        var circle;
-        if (hired == 1) { 
-          circle = {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: 'red',
-            fillOpacity: .2,
-            scale: 3*hired+3,
-            strokeColor: 'white',
-            strokeWeight: .5
-          };
-        } else {
-            circle = {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: 'blue',
-            fillOpacity: .5,
-            scale: 3*hired+3,
-            strokeColor: 'white',
-            strokeWeight: .5
-          };
-        }
-          return circle;
-    }
-
-
-    //Formats the data in a feature collection
-    function geoFormat(array) {
-        var data = [];
-        array.map(function (d, i) {
-            data.push(
-            { 
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point", 
-                    "coordinates": [Number(d.x_coord), Number(d.y_coord)]},
-                "properties": {
-                    "id" : Number(d.id),
-                    "date" : Date(d.date),
-                    "hired" : Number(d.hired),
-                }
-            });
-        });
-        return data;
-    }
-
-    //Draws the map and the points
-    function draw(countries)
-    {
-        //draw map
-        var country = g.selectAll(".country").data(countries);
-        country.enter().insert("path")
-                .attr("class", "country")
-                .attr("d", path)
-                .style('stroke-width', 1)
-                .style("fill", "lightgray")
-                .style("stroke", "white");
-
-
-        //draw point        
-        var point =  g.selectAll("path")
-            .data(geoData.features)
-            .enter()
-            .append("circle")
-            .attr("cx", function(d) { return projection(d.geometry.coordinates)[0];})
-            .attr("cy", function(d) { return projection(d.geometry.coordinates)[1]; })
-            .attr("r", 1)
-            .style("fill", "orange")
-            .classed("pin", true);
-    };
-
-    //Filters data points according to the specified magnitude
-    function filterMag(value) {
-        //Complete the code
-        magnitude = value;
-        
-        svg.selectAll("circle").data(data).style("opacity", function(d){
-            if(d.mag < magnitude)
-                return 0;
-            else
-                return 1;
-            })
-    }
+    console.log("Initiated heatmap");
 
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
@@ -199,24 +267,9 @@ function map(data) {
 
     };
 
-    //Calls k-means function and changes the color of the points
+    //Calls cluster function and changes the color of the points
     this.cluster = function () {
-        var k = 4;
-        var kmeansRes = kmeans(kmeansArray,k);
-        //initialize the cluster colors
-		// add index to properties, and check if kmeansRes.id is same as data id.
-		for (j = 0; j < k; j++) {
-			data.forEach(function(d, i) {
-				if (kmeansRes[i] == j) {
-					cc[i] = color[j];
-
-				}else
-					cc[i] = "orange";
-			});
-		}
-		console.log(cc);
-		d3.selectAll(".point")
-		.style("fill", function(d, i){ return cc[i]; });
+        // to do
     };
 
     //Zoom and panning method
@@ -229,10 +282,70 @@ function map(data) {
         g.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
     }
 
-    //Prints features attributes
-    function printInfo(value) {
-        var elem = document.getElementById('info');
-        elem.innerHTML = "Place: " + value["place"] + " / Depth: " + value["depth"] + " / Magnitude: " + value["mag"] + "&nbsp;";
-    }
+}
 
+function dataFeed_callback(geoData) {
+    var heatmapData = processJSON(geoData);
+    console.log("JSON processed");
+    var heatmap = new google.maps.visualization.HeatmapLayer({
+      data: heatmapData,
+      dissipating: true,
+      maxIntensity: 200
+    });
+    heatmap.setMap(googlemap);
+    //googlemap.data.addGeoJson(geoData);
+}
+
+function initMap(googleStyle){
+    googlemap = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 59.3279, lng: 18.0658},
+        zoom: 12,
+        styles: googleStyle,
+        disableDoubleClickZoom: true
+    });
+
+    /*     
+    googlemap.data.setStyle(function() {
+        return {
+          icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: 'red',
+                    fillOpacity: .2,
+                    scale: 6,
+                    strokeColor: 'white',
+                    strokeWeight: .5
+                }
+        };
+    });*/
+    
+}
+
+//Formats the data in a feature collection
+function geoFormat(array) {
+    var data = [];
+    array.map(function (d, i) {
+        data.push(
+        { 
+            "type": "Feature",
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [Number(d.x_coord), Number(d.y_coord)]},
+            "properties": {
+                "id" : Number(d.id),
+                "date" : Date(d.date),
+                "hired" : Number(d.hired),
+            }
+        });
+    });
+    return data;
+}
+
+function processJSON(geoData) {
+    var myData = new Array();
+    for (var i = 0, features; features = geoData.features[i]; i++) {
+      if (features.geometry) {
+        myData.push(new google.maps.LatLng(features.geometry.coordinates[1], features.geometry.coordinates[0]));
+      }
+    }
+    return myData;
 }
