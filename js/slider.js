@@ -30,11 +30,12 @@ function slider(data) {
 	//console.log(handleTop + ' ' + handleBottom)
 	slider.noUiSlider.on('update', function( values, handle ){
 		map1.filterTime(values);
-		dateValues[handle].innerHTML = formatDate(new Date(+values[handle]));
+		//dateValues[handle].innerHTML = formatDate(new Date(+values[handle]));
 	});
 
 
 	// Create a string representation of the date.
+	//not working yet
 	function formatDate ( date ) {
 	    var string = date.getMonth() + "-" + date.getDay();
 	    console.log(string);
