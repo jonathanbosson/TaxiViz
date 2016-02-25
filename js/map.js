@@ -17,8 +17,8 @@ function map(data) {
 
     var curr_mag = 4;
 
-    var format = d3.time.format.utc("%Y-%m-%d%H%M%S");
-    //2013-03-08 18:06:15
+    var format = d3.time.format.utc("%Y-%m-%dT%H%M%S");
+    //2013-03-08T18:06:15
     
 
    var timeExt = d3.extent(data.map(function (d) {
@@ -100,7 +100,7 @@ function map(data) {
             .append("circle")
             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0];})
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1]; })
-            .attr("r", 1)
+            .attr("r", 2)
             .style("fill", "orange")
             .classed("pin", true);
     };
@@ -122,16 +122,20 @@ function map(data) {
     this.filterTime = function (value) {
         //Complete the code
         
-        startTime = value[0].getTime();
-        endTime = value[1].getTime();
+        startTime = value[0];//.getTime();
+        endTime = value[1];//.getTime();
+        //console.log('start: ' + startTime)
+        //console.log('end: ' + endTime)
         
-        svg.selectAll("circle").data(data).style("opacity", function(d){
-            //d.properties.time is a string, convert to a date
-            var date = new Date(d.time);
+        svg.selectAll("circle").data(data).style("fill", function(d){
+            //d.properties.date is a string, convert to a date
+            var date = new Date(d.date);
+            //console.log(date)
+            //console.log('point:' + date);
             if(startTime <= date.getTime() && date.getTime() <= endTime)
-                return 1;
+                return "orange";
             else
-                return 0;
+                return "blue";
             })
 
     };

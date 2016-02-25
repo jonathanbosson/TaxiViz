@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/colorbrewer.css">
+        <link rel="stylesheet" href="css/nouislider.css">
+        <link rel="stylesheet" href="css/nouislider.tooltips.css">
         <link rel="stylesheet" href="css/main.css">
 
         <!--modules css-->
@@ -56,7 +58,12 @@
                 <br><br><br>
 
                 <div class="row">
-                    <div class="col-md-6" id ="area" style ="height: 90vh"></div>
+                    <div class="col-md-6" id ="area" style ="height: 90vh">
+                        <input type="number" id="handle1" style="float:right;">
+                        <input type="number" id="handle2" style="float:right;">
+                        <div id="sliderContainer" style="width: 20px; height: 80vh; 
+                        margin: 2% 10% 2% 10%;"></div>
+                    </div>
                     <div class="col-md-6" id ="map" style ="height: 90vh"></div>
                 </div>
             </div>
@@ -71,6 +78,7 @@
         <script src="js/vendor/topojson.v1.min.js"></script>
         <script src="js/vendor/underscore-min.js"></script>
         <script src="js/vendor/colorbrewer.js"></script>
+        <script src="js/vendor/nouislider.min.js"></script>
 
         <!--modules js-->
         <script src="js/kmeans.js"></script>
