@@ -141,15 +141,17 @@ function map(data) {
         var k = 4;
         console.log('orig. Data:', data);
         //var kmeansRes = kmeans(kmeansArray,k);
-        var opticsRes = optics(data,0.08, 2);
+        var opticsRes = optics(data,0.1, 2);
+        
+        //data[1].cluster = 2;
+		//data[4].cluster = 2;
         
         //initialize the cluster colors
 		// add index to properties, and check if kmeansRes.id is same as data id.
 		
 		data.forEach(function(d, i) {
-			if (d.cluster != undefined) {
+			if (d.cluster !== undefined) {
 				cc[i] = color[d.cluster];
-
 			}else
 				cc[i] = "orange";
 		});
@@ -158,7 +160,7 @@ function map(data) {
 		.style("fill", function(d, i){ return cc[i]; });*/
 		svg.selectAll("circle").data(data).style("fill", function(d) {
             if(d.cluster != undefined)
-				return cc[d.cluster];
+				return color[d.cluster];
 			else
 				return 'orange';
         });

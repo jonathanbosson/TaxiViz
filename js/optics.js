@@ -5,16 +5,9 @@
 * @param minPoints
 * @return {Object}
 */
-var keys = [];
-var cluster = [];
-var centroids = [];
-var EPSILON = 0.01;
+
 var seeds = new buckets.PriorityQueue(compare);
 var data;
-var orderedList = []
-var cluster = 0;
-
-//var seeds = new BinaryHeap(function(element){return element.reachDist}, function(element){return element.index},'reachDist');
 
 function optics(incomingdata, eps, minPoints) {	
 	// A point p is a core point if at least minPoints
@@ -22,26 +15,28 @@ function optics(incomingdata, eps, minPoints) {
 	data = incomingdata;
 	var q;
 	var N;
+	var cluster = 0;
+	
+	console.log(dist(data[4], data[5]));
 	
 	// Initialize data
-	data.forEach(function(d,i){
+	data.forEach(function(d,i) {
 		d.processed = false;
 		d.reachDist = undefined;
-		d.index = i; //index?
+		d.index = i;
+		d.cluster = undefined;
 	});
 	
 	data.forEach(function(p) {
 		if(!p.processed){
-			N = getNeighbors(p, eps); //Finds the neighbors correctly
+			N = getNeighbors(p, eps); //Finds the neighbors of p
 			console.log('neig',N.toArray());
 			p.processed = true;
-			//p.cluster = cluster;
-			// output p to ordered list?
-			orderedList.push(p);
 			
 			if(coreDistance(p, eps, minPoints) !== undefined){
 				//seeds.clear(); //clear priority queue
 				update(N, p, seeds, eps, minPoints); //Update priority queue
+				console.log('s',seeds.toArray(), seeds.peek());
 				while(!seeds.isEmpty()){
 					q = seeds.dequeue();
 					if(!q.processed) {
@@ -54,7 +49,6 @@ function optics(incomingdata, eps, minPoints) {
 							update(Nx, q, seeds, eps, minPoints);
 					}
 				}
-				
 			}
 		}
 		cluster++;
@@ -67,19 +61,19 @@ function optics(incomingdata, eps, minPoints) {
 function update(N, p, seeds, eps, minPoints) {
 	var coreDist = coreDistance(p, eps, minPoints);
 	
-	N.forEach(function(o){
-		if(!o.processed){
+	N.forEach(function(o) {
+		if(!o.processed) {
 			var newReachDist = Math.max(coreDist, dist(p,o));
-			if(o.reachDist === undefined){
+			if(o.reachDist === undefined) {
 				//o is not in seed
 				o.reachDist = newReachDist;
 				seeds.add(o);
 			} else { //o is in seed, check for improvements (reorder)
-				if(newReachDist < o.reachDist)
-				{
+				if(newReachDist < o.reachDist) {
 					//move up this element in queue
 					o.reachDist = newReachDist;
 					moveUp(o, newReachDist);
+					console.log('moved up', seeds.toArray());
 				}
 			}
 		}
@@ -110,9 +104,10 @@ function coreDistance(p, eps, minPoints) {
 function getNeighbors(p, eps) {
 	var neighbor = buckets.PriorityQueue(compare);
 	
-	data.forEach(function(o){
-		if(p.index !== o.index && dist(p,o) < eps)
+	data.forEach(function(o) {
+		if(p.index !== o.index && dist(p,o) < eps) {
 			neighbor.add(o);
+		}
 	});
 	
 	return neighbor;
@@ -124,29 +119,39 @@ function dist(b1, b2) {
 }
 
 function compare(a, b) {
-	if(a.reachDist == undefined && b.reachDist == undefined)
+	console.log('used', a.reachDist, b.reachDist);
+	if (a.reachDist === undefined && b.reachDist === undefined)
 		return 0; //Equals
-	else if(a.reachDist == undefined && b.reachDist != undefined)
-		return -1; //a smaller than b
-	else if(a.reachDist != undefined && b.reachDist == undefined)
-		return 1; // a larger than b
-	else if( a.reachDist < b.reachDist)
-		return -1;
-	else if(a.reachDist > b.reachDist)
-		return 1; // a larger than b
+	else if (a.reachDist === undefined && b.reachDist !== undefined)
+		return -1; //a larger than b
+	else if (a.reachDist !== undefined && b.reachDist === undefined)
+		return 1; // a smaller than b
+	else if (a.reachDist < b.reachDist)
+		return 1;
+	else if (a.reachDist > b.reachDist)
+		return -1; // a larger than b
 	else
-		return 1; //a equal to b
+		return 0; //a equal to b
 }
 
-function moveUp(a, newReachDist){
+function moveUp(a, newReachDist) {
+	console.log('bf', seeds.toArray());
 	var tempSeeds = seeds.toArray();
 	seeds.clear();
-	for(var i = 0; i < tempSeeds.length; i++)
-	{		
-		seeds.add(tempSeeds[i]);
-	}
+	console.log('empty?',seeds.toArray());
+	var news = new buckets.PriorityQueue(compare);
+	
+	//for(var i = 0; i < tempSeeds.length; i++) {
+	tempSeeds.forEach(function(d) {
+		console.log('movvv');
+		seeds.add(d);
+		news.add(d);
+	});
+	
 	if(tempSeeds.length === 0 )
 		seeds.add(a);
+		
+	console.log('af', news.toArray());
 }
 
 
