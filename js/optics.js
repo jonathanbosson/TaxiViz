@@ -12,6 +12,7 @@ var EPSILON = 0.01;
 var seeds = new buckets.PriorityQueue(compare);
 var data;
 var orderedList = []
+var cluster = 0;
 
 //var seeds = new BinaryHeap(function(element){return element.reachDist}, function(element){return element.index},'reachDist');
 
@@ -34,6 +35,7 @@ function optics(incomingdata, eps, minPoints) {
 			N = getNeighbors(p, eps); //Finds the neighbors correctly
 			console.log('neig',N.toArray());
 			p.processed = true;
+			//p.cluster = cluster;
 			// output p to ordered list?
 			orderedList.push(p);
 			
@@ -45,6 +47,8 @@ function optics(incomingdata, eps, minPoints) {
 					if(!q.processed) {
 						Nx = getNeighbors(q, eps);
 						q.processed = true;
+						q.cluster = cluster;
+						p.cluster = cluster
 						//output q to the ordered list?
 						if(coreDistance(q, eps, minPoints) != undefined)
 							update(Nx, q, seeds, eps, minPoints);
@@ -53,6 +57,7 @@ function optics(incomingdata, eps, minPoints) {
 				
 			}
 		}
+		cluster++;
 	});
 	
 	console.log(data);
@@ -61,21 +66,17 @@ function optics(incomingdata, eps, minPoints) {
 
 function update(N, p, seeds, eps, minPoints) {
 	var coreDist = coreDistance(p, eps, minPoints);
-	console.log('core', coreDist);
 	
 	N.forEach(function(o){
 		if(!o.processed){
 			var newReachDist = Math.max(coreDist, dist(p,o));
 			if(o.reachDist === undefined){
-				console.log('not in', o.index);
 				//o is not in seed
 				o.reachDist = newReachDist;
 				seeds.add(o);
 			} else { //o is in seed, check for improvements (reorder)
 				if(newReachDist < o.reachDist)
 				{
-					console.log('better', o.index)
-					console.log(o.index, o.reachDist, newReachDist); 
 					//move up this element in queue
 					o.reachDist = newReachDist;
 					moveUp(o, newReachDist);
