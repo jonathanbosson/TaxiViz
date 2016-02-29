@@ -6,7 +6,7 @@
 * @return {Object}
 */
 
-var seeds = new buckets.PriorityQueue(compare);
+var seeds = new buckets.Heap(compare);
 var data;
 
 function optics(incomingdata, eps, minPoints) {	
@@ -38,7 +38,7 @@ function optics(incomingdata, eps, minPoints) {
 				update(N, p, seeds, eps, minPoints); //Update priority queue
 				console.log('s',seeds.toArray(), seeds.peek());
 				while(!seeds.isEmpty()){
-					q = seeds.dequeue();
+					q = seeds.removeRoot();
 					if(!q.processed) {
 						Nx = getNeighbors(q, eps);
 						q.processed = true;
@@ -102,7 +102,7 @@ function coreDistance(p, eps, minPoints) {
 
 // Returns n neighbors that is within eps distance of point p
 function getNeighbors(p, eps) {
-	var neighbor = buckets.PriorityQueue(compare);
+	var neighbor = buckets.Heap(compare);
 	
 	data.forEach(function(o) {
 		if(p.index !== o.index && dist(p,o) < eps) {
@@ -118,18 +118,19 @@ function dist(b1, b2) {
 	return Math.sqrt(Math.pow((b1.x_coord - b2.x_coord), 2) + Math.pow((b1.y_coord - b2.y_coord),2));
 }
 
+// minHeap compare function
 function compare(a, b) {
 	console.log('used', a.reachDist, b.reachDist);
 	if (a.reachDist === undefined && b.reachDist === undefined)
 		return 0; //Equals
 	else if (a.reachDist === undefined && b.reachDist !== undefined)
-		return -1; //a larger than b
+		return 1; //a larger than b
 	else if (a.reachDist !== undefined && b.reachDist === undefined)
-		return 1; // a smaller than b
+		return -1; // a smaller than b
 	else if (a.reachDist < b.reachDist)
-		return 1;
+		return -1;
 	else if (a.reachDist > b.reachDist)
-		return -1; // a larger than b
+		return 1; // a larger than b
 	else
 		return 0; //a equal to b
 }
@@ -139,19 +140,19 @@ function moveUp(a, newReachDist) {
 	var tempSeeds = seeds.toArray();
 	seeds.clear();
 	console.log('empty?',seeds.toArray());
-	var news = new buckets.PriorityQueue(compare);
 	
 	//for(var i = 0; i < tempSeeds.length; i++) {
 	tempSeeds.forEach(function(d) {
 		console.log('movvv');
 		seeds.add(d);
-		news.add(d);
 	});
 	
 	if(tempSeeds.length === 0 )
 		seeds.add(a);
 		
-	console.log('af', news.toArray());
+	console.log('af', seeds.toArray());
+	//while(!seeds.isEmpty())
+		//console.log('ee', seeds.removeRoot());
 }
 
 
