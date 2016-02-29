@@ -1,3 +1,6 @@
+var heatmap;
+var minTime;
+
 function map(data) {
 	var googleStyle = 
 
@@ -194,8 +197,8 @@ function map(data) {
     var colors = colorbrewer.Set3[10];
     var color = ["green","blue","grey","yellow"];
 	var cc = [];
-	var format = d3.time.format.utc("%Y-%m-%d %H%M%S");
 
+	var format = d3.time.format.utc("%Y-%m-%dT%H%M%S");
     var zoom = d3.behavior.zoom()
             .scaleExtent([0.5, 8])
             .on("zoom", move);
@@ -208,13 +211,9 @@ function map(data) {
 
     var curr_mag = 4;
 
-   //var format = d3.time.format.utc("%Y-%m-%d %H%M%S");
-    //2013-03-08 18:06:15
-    
-
-   /* var timeExt = d3.extent(data.map(function (d) {
-        return format.parse(d.time);
-    }));*/
+   var timeExt = d3.extent(data.map(function (d) {
+        return format.parse(d.date);
+    }));
 
     var filterdData = data;
 
@@ -236,35 +235,30 @@ function map(data) {
 
     //Creates a new geographic path generator and assing the projection
     var path = d3.geo.path().projection(projection);
-
+    var minDate = new Date(d3.min(data.map(function(d) { return d.date; })));
+    var maxDate = new Date(d3.max(data.map(function(d) { return d.date; })));
+    minTime = minDate;
     //Formats the data in a feature collection through geoFormat()
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
     console.log("geoData stored")
-
-    
+    var mapDim = {
+    height: 500,
+    width: 500
+}
+    var dateRange = new Array(minDate.getTime(), maxDate.getTime());
     var googlemap;
     initMap(googleStyle);
-    console.log("Map initiated")
 
-    dataFeed_callback(geoData);
-    console.log("Initiated heatmap");
+    heatmap = new google.maps.visualization.HeatmapLayer({
+      dissipating: true,
+      maxIntensity: 500
+    });
+    dataFeed_callback(geoData, dateRange);
+    console.log("Initiated Google map");
 
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
-        //Complete the code
-        
-        startTime = value[0].getTime();
-        endTime = value[1].getTime();
-        
-        svg.selectAll("circle").data(data).style("opacity", function(d){
-            //d.properties.time is a string, convert to a date
-            var date = new Date(d.time);
-            if(startTime <= date.getTime() && date.getTime() <= endTime)
-                return 1;
-            else
-                return 0;
-            })
-
+        dataFeed_callback(geoData, value);
     };
 
     //Calls cluster function and changes the color of the points
@@ -282,70 +276,68 @@ function map(data) {
         g.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
     }
 
-}
-
-function dataFeed_callback(geoData) {
-    var heatmapData = processJSON(geoData);
-    console.log("JSON processed");
-    var heatmap = new google.maps.visualization.HeatmapLayer({
-      data: heatmapData,
-      dissipating: true,
-      maxIntensity: 200
-    });
-    heatmap.setMap(googlemap);
-    //googlemap.data.addGeoJson(geoData);
-}
-
-function initMap(googleStyle){
-    googlemap = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 59.3279, lng: 18.0658},
-        zoom: 12,
-        styles: googleStyle,
-        disableDoubleClickZoom: true
-    });
-
-    /*     
-    googlemap.data.setStyle(function() {
-        return {
-          icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: 'red',
-                    fillOpacity: .2,
-                    scale: 6,
-                    strokeColor: 'white',
-                    strokeWeight: .5
-                }
-        };
-    });*/
-    
-}
-
-//Formats the data in a feature collection
-function geoFormat(array) {
-    var data = [];
-    array.map(function (d, i) {
-        data.push(
-        { 
-            "type": "Feature",
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [Number(d.x_coord), Number(d.y_coord)]},
-            "properties": {
-                "id" : Number(d.id),
-                "date" : Date(d.date),
-                "hired" : Number(d.hired),
-            }
+    function initMap(googleStyle){
+        googlemap = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 59.3279, lng: 18.0658},
+            zoom: 12,
+            styles: googleStyle,
+            disableDoubleClickZoom: true
         });
-    });
-    return data;
-}
 
-function processJSON(geoData) {
-    var myData = new Array();
-    for (var i = 0, features; features = geoData.features[i]; i++) {
-      if (features.geometry) {
-        myData.push(new google.maps.LatLng(features.geometry.coordinates[1], features.geometry.coordinates[0]));
-      }
+        /*     
+        googlemap.data.setStyle(function() {
+            return {
+              icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: 'red',
+                        fillOpacity: .2,
+                        scale: 6,
+                        strokeColor: 'white',
+                        strokeWeight: .5
+                    }
+            };
+        });*/
+        
     }
-    return myData;
+    // work in progress - solve bounds problem
+    function boundsCheck(value){
+        var marker = new google.maps.LatLng(value.coordinates[1], value.coordinates[0])
+        return googlemap.getBounds().contains(marker.getPosition());
+    }
+
+    function dataFeed_callback(geoData, dateRange) {
+        var heatmapData = new google.maps.MVCArray();
+        for (var i = 0, features; features = geoData.features[i]; i++) {
+            var date = new Date(features.properties.date);
+            if (features.geometry && date.getTime() >= dateRange[0] && date.getTime() <= dateRange[1]) {
+                heatmapData.push(new google.maps.LatLng(features.geometry.coordinates[1], features.geometry.coordinates[0]));
+            }
+        }
+        heatmap.data = heatmapData;
+        heatmap.maxIntensity = Math.floor(255410*(dateRange[1] - dateRange[0]) / minTime);
+        console.log(heatmap);
+
+        heatmap.setMap(googlemap);
+    }
+
+    //Formats the data in a feature collection
+    function geoFormat(array) {
+        var data = [];
+        array.map(function (d, i) {
+            data.push(
+            { 
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point", 
+                    "coordinates": [Number(d.x_coord), Number(d.y_coord)]},
+                "properties": {
+                    "id" : Number(d.id),
+                    "date" : d.date,
+                }
+            });
+        });
+        return data;
+    }
+
+
 }
