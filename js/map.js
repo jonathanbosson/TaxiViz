@@ -141,7 +141,7 @@ function map(data) {
         var k = 4;
         console.log('orig. Data:', data);
         //var kmeansRes = kmeans(kmeansArray,k);
-        var opticsRes = optics(data,0.1, 1);
+        var opticsRes = optics(data,0.1, 4);
         
         //initialize the cluster colors
 		// add index to properties, and check if kmeansRes.id is same as data id.

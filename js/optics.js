@@ -38,16 +38,17 @@ function optics(incomingdata, eps, minPoints) {
 			orderedList.push(p);
 			
 			if(coreDistance(p, eps, minPoints) !== undefined){
-				seeds.clear(); //clear priority queue
+				//seeds.clear(); //clear priority queue
 				update(N, p, seeds, eps, minPoints); //Update priority queue
 				while(!seeds.isEmpty()){
-					console.log('going whiiil(e)d');
 					q = seeds.dequeue();
-					Nx = getNeighbors(q, eps);
-					q.processed = true;
-					//output q to the ordered list?
-					if(coreDistance(q, eps, minPoints) != undefined)
-						update(Nx, q, seeds, eps, minPoints);
+					if(!q.processed) {
+						Nx = getNeighbors(q, eps);
+						q.processed = true;
+						//output q to the ordered list?
+						if(coreDistance(q, eps, minPoints) != undefined)
+							update(Nx, q, seeds, eps, minPoints);
+					}
 				}
 				
 			}
@@ -64,17 +65,20 @@ function update(N, p, seeds, eps, minPoints) {
 	
 	N.forEach(function(o){
 		if(!o.processed){
-			newReachDist = Math.max(coreDist, dist(p,o));
+			var newReachDist = Math.max(coreDist, dist(p,o));
 			if(o.reachDist === undefined){
+				console.log('not in', o.index);
 				//o is not in seed
 				o.reachDist = newReachDist;
 				seeds.add(o);
 			} else { //o is in seed, check for improvements (reorder)
 				if(newReachDist < o.reachDist)
 				{
+					console.log('better', o.index)
+					console.log(o.index, o.reachDist, newReachDist); 
 					//move up this element in queue
+					o.reachDist = newReachDist;
 					moveUp(o, newReachDist);
-					//o.reachDist = newReachDist;
 				}
 			}
 		}
@@ -103,14 +107,14 @@ function coreDistance(p, eps, minPoints) {
 
 // Returns n neighbors that is within eps distance of point p
 function getNeighbors(p, eps) {
-	var Neighbor = buckets.PriorityQueue(compare);
+	var neighbor = buckets.PriorityQueue(compare);
 	
 	data.forEach(function(o){
 		if(p.index !== o.index && dist(p,o) < eps)
-			Neighbor.add(o);
+			neighbor.add(o);
 	});
 	
-	return Neighbor;
+	return neighbor;
 }
 
 // Returns the euclidean distance between two GPS points
@@ -137,10 +141,7 @@ function moveUp(a, newReachDist){
 	var tempSeeds = seeds.toArray();
 	seeds.clear();
 	for(var i = 0; i < tempSeeds.length; i++)
-	{
-		if(tempSeeds[i].index === a.index)
-			tempSeeds[i].reachDist = newReachDist;
-		
+	{		
 		seeds.add(tempSeeds[i]);
 	}
 	if(tempSeeds.length === 0 )
