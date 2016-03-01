@@ -8,7 +8,10 @@ d3.csv("data/test_small.csv", function (data) {
    	slider1 = new slider(data);
 });
 
-
+function getHelp()
+{
+	swal("Here's a message!", "It's pretty, isn't it?");
+}
 /*
 
 Idéer

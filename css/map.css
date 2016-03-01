@@ -3,15 +3,16 @@
 }
 
 #map {
+
 	left: 0;
     right: 0;
     margin-left: auto;
     margin-right: auto;
     position: absolute;
-    border: 1px solid black;
+    border: 1px solid gray;
 }
 
-#legend {
+#legendDiv {
     position: relative;
     width: 60%;
     height: 30px;
@@ -21,5 +22,5 @@
 #legendGradient {
     width: 100%;
     height: 15px;
-    border: 1px solid black;
+    border: 1px solid gray;
 }

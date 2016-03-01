@@ -23,7 +23,8 @@
   text-align: center;
   font-size: 18px;
 }
-.legend {
+.legendHandle {
+  position: relative;
   padding:0 2px 0 2px;
   text-align:center; 
   vertical-align: middle;
