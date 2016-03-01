@@ -240,6 +240,7 @@ function map(data) {
     minTime = minDate;
     //Formats the data in a feature collection through geoFormat()
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
+
     console.log("geoData stored")
     var mapDim = {
     height: 500,
@@ -263,7 +264,25 @@ function map(data) {
 
     //Calls cluster function and changes the color of the points
     this.cluster = function () {
-        // to do
+        var k = 4;
+        var opticsRes = optics(data,0.1, 2);
+        
+        //initialize the cluster colors
+		// add index to properties, and check if kmeansRes.id is same as data id.
+		
+		data.forEach(function(d, i) {
+			if (d.cluster !== undefined) {
+				cc[i] = color[d.cluster];
+			}else
+				cc[i] = "orange";
+		});
+		
+		svg.selectAll("circle").data(data).style("fill", function(d) {
+            if(d.cluster != undefined)
+				return color[d.cluster];
+			else
+				return 'orange';
+        });
     };
 
     //Zoom and panning method
