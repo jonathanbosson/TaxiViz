@@ -1,4 +1,5 @@
 function map(data) {
+	var daterange;
 	var googleStyle = 
     [
         {
@@ -208,30 +209,43 @@ function map(data) {
 
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
+    	daterange = value;
         dataFeed_callback(geoData, value);
     };
 
     //Calls cluster function and changes the color of the points
     this.cluster = function () {
-        var k = 4;
-        var opticsRes = optics(data,0.1, 2);
+        var radius = document.getElementById("radius").value;
+        var minPoints = document.getElementById("minpoints").value;
+        var filteredData = []
         
+        for (var i = 0, features; features = geoData.features[i]; i++) {
+            var date = new Date(features.properties.date);
+            if (features.geometry && date.getTime() >= daterange[0] && date.getTime() <= daterange[1]) {
+                filteredData.push(features);
+            }
+        }
+        
+        console.log(filteredData);
+        
+        var opticsRes = optics(filteredData,radius, minPoints);
+        console.log(opticsRes);
         //initialize the cluster colors
 		// add index to properties, and check if kmeansRes.id is same as data id.
 		
-		data.forEach(function(d, i) {
+		/*data.forEach(function(d, i) {
 			if (d.cluster !== undefined) {
 				cc[i] = color[d.cluster];
 			}else
 				cc[i] = "orange";
 		});
-		
+		console.log(cc);
 		svg.selectAll("circle").data(data).style("fill", function(d) {
             if(d.cluster != undefined)
 				return color[d.cluster];
 			else
 				return 'orange';
-        });
+        });*/
     };
 
     function initMap(googleStyle){
@@ -286,6 +300,7 @@ function map(data) {
                 "properties": {
                     "id" : Number(d.id),
                     "date" : d.date,
+                    "cluster" : undefined,
                 }
             });
         });

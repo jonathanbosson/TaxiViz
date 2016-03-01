@@ -13,17 +13,19 @@ function optics(incomingdata, eps, minPoints) {
 	// A point p is a core point if at least minPoints
 	// are found within its eps-neighborhood
 	
+	// Incoming data is in the form of geoData which has
+	// d.properties and d.geometry
 	data = incomingdata;
 	var q;
 	var N;
 	var cluster = 0;
+	var orderedList = [];
 	
 	// Initialize data
 	data.forEach(function(d,i) {
 		d.processed = false;
 		d.reachDist = undefined;
 		d.index = i;
-		d.cluster = undefined;
 	});
 	
 	data.forEach(function(p) {
@@ -40,9 +42,11 @@ function optics(incomingdata, eps, minPoints) {
 					if(!q.processed) {
 						Nx = getNeighbors(q, eps);
 						q.processed = true;
-						q.cluster = cluster;
-						p.cluster = cluster
+						q.properties.cluster = cluster;
+						p.properties.cluster = cluster;
+						
 						//output q to the ordered list?
+						
 						if(coreDistance(q, eps, minPoints) != undefined)
 							update(Nx, q, seeds, eps, minPoints);
 					}
@@ -51,6 +55,16 @@ function optics(incomingdata, eps, minPoints) {
 		}
 		cluster++;
 	});
+	// Remove added properties
+	data.forEach(function(d,i) {
+		if(d.properties.cluster !== undefined) {
+			delete d['processed'];
+			delete d['reachDist'];
+			delete d['index'];
+			orderedList.push(d);
+		}
+	});
+	return orderedList;
 }
 
 
@@ -110,7 +124,7 @@ function getNeighbors(p, eps) {
 
 // Returns the euclidean distance between two GPS points
 function dist(b1, b2) {
-	return Math.sqrt(Math.pow((b1.x_coord - b2.x_coord), 2) + Math.pow((b1.y_coord - b2.y_coord),2));
+	return Math.sqrt(Math.pow((b1.geometry.coordinates[0] - b2.geometry.coordinates[0]), 2) + Math.pow((b1.geometry.coordinates[1] - b2.geometry.coordinates[1]),2));
 }
 
 // minHeap compare function
