@@ -16,8 +16,9 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/colorbrewer.css">
         <link rel="stylesheet" href="css/nouislider.css">
-        <link rel="stylesheet" href="css/nouislider.tooltips.css">
+        <link rel="stylesheet" href="css/sweetalert.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 
         <!--modules css-->
         <link rel="stylesheet" href="css/map.css">
@@ -36,7 +37,7 @@
             <!-- Fixed navbar -->
             <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div class="container">
-                    <div class="navbar-header">
+                    <div class="navbar-header" style="width: 100%">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
@@ -44,6 +45,7 @@
                             <span class="icon-bar"></span>
                         </button>
                         <a class="navbar-brand" href="#">TaxiViz</a>
+                        <a class="navbar-brand" onclick="getHelp()" style="float: right;">Help</a>
                     </div>
                 </div>
             </div>
@@ -55,19 +57,33 @@
                 <!-- row of columns -->
 
                 <br><br><br>
-
                 <div class="row" style ="height: 90%;">
-                    <div  id ="area" style =" width: 25vw; float: left;">
+                    <div  id ="left" style =" width: 25vw; float: left;">
                         <div id="sliderContainer" style="width: 20px; height: 50vh; 
                         margin: 6% 45% 6% 45%;"></div>
                     </div> 
-                    <div id ="map" class="col-md-6" id ="map" style ="height: 80vh; width: 50vw"></div>
-                    <div id "right" class="col-md-6" style="float: right;"></div>
+                    <div id="center" class="col-md-6" style ="height: 80vh; width: 50vw">
+                        <div id ="map" style ="height: 80vh; width: 50vw"></div>
+                        <div id="legendDiv"><div id="legend"><div id="legendGradient"></div></div></div>
+                    </div>
+                    <div id="right" class="col-md-6" style="width: 15vw; padding: 0vw;">
+			        	<form "pure-form pure-form-stacked" style="margin-left: 10px">
+                                <legend>Cluster taxi cars</legend>
+                                
+                                <label for="radius">Cluster radius: </label>
+        			        	<input id="floatNumber" type="number" min="0" max="1" step="0.1" value="0.1"/>
+                                
+                                <label for="radius"> Minimum points in cluster: </label>
+                                <input id="intNumber" type="number" min="0" max="100000" step="1" value="1" style="float: left"/>
+                                
+                                <button class="pure-button pure-button-primary" type="button" style="margin-top: 5px; float: left;">Cluster</button>
+                        </form>
+                    </div>
                 </div>
                 <div class="col" style ="height: 10%; width: 100%; margin-left: 37%; margin-top: 1%;">
-                    <p class="legend" id="handle1"></p>
-                    <p class="legend"> - </p>
-                    <p class="legend" id="handle2"></p>
+                    <p class="legendHandle" id="handle1"></p>
+                    <p class="legendHandle"> - </p>
+                    <p class="legendHandle" id="handle2"></p>
                 </div>
             </div>
         </div>
@@ -84,6 +100,7 @@
         <!--buckets, JavaScript library including minHeap https://github.com/mauriciosantos/Buckets-JS -->
         <script src="js/vendor/buckets.min.js"></script>
         <script src="js/vendor/nouislider.min.js"></script>
+        <script src="js/vendor/sweetalert.min.js"></script>
 
 		<!--modules js-->
         <script src="js/optics.js"></script>
