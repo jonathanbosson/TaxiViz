@@ -2,14 +2,10 @@ function slider(data) {
 	console.log('Creating slider');
 
 	var format = d3.time.format.utc("%Y-%m-%dT%H%M%S");
-	//d3.time.format.utc("data/test_small.csv");
-	//var minDate = new Date('2013-03-01');
-	//var maxDate = new Date('2013-03-31');  
 	var minDate = new Date(d3.min(data.map(function(d) { return d.date; })));
 	var maxDate = new Date(d3.max(data.map(function(d) { return d.date; })));
-	var handleTop = minDate;//new Date('2013-03-10'); 
-	var handleBottom = maxDate;//new Date('2013-03-20');
-
+	var handleTop = minDate;
+	var handleBottom = maxDate;
 	var dateValues = [
 		document.getElementById('handle1'),
 		document.getElementById('handle2')
@@ -56,14 +52,10 @@ function slider(data) {
 	// Formatting is borrowed from https://refreshless.com/nouislider/examples/ 
 	// Create a list of day and monthnames.
 	function formatDate ( date ) {
-	    //var string = date.getMonth()+1 + "-" + date.getDate(); //month [0,11], date [1,31]
 	    return weekdays[date.getDay()] + ", " +
 	        date.getDate() + nth(date.getDate()) + " " +
 	        months[date.getMonth()] + " " +
-	        date.getFullYear();// + " " + date.getHours() + " " + 
-	       // date.getMinutes() + " " +date.getSeconds();
-	    console.log(string);
-	    return string;
+	        date.getFullYear();
 	}
 
 	// Append a suffix to dates.

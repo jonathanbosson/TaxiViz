@@ -193,12 +193,8 @@ function map(data) {
     
     //Formats the data in a feature collection through geoFormat()
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
-
     console.log("geoData stored")
-    var mapDim = {
-    height: 500,
-    width: 500
-}
+
     var dateRange = new Array(minDate.getTime(), maxDate.getTime());
     var googlemap;
     google.maps.event.addDomListener(window, 'load', initMap(googleStyle));
