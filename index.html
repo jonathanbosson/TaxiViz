@@ -16,7 +16,6 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/colorbrewer.css">
         <link rel="stylesheet" href="css/nouislider.css">
-        <link rel="stylesheet" href="css/nouislider.pips.css">
         <link rel="stylesheet" href="css/nouislider.tooltips.css">
         <link rel="stylesheet" href="css/main.css">
 
@@ -62,7 +61,12 @@
                         <div id="sliderContainer" style="width: 20px; height: 80vh; 
                         margin: 6% 10% 6% 10%;"></div>
                     </div> 
-                    <div id ="map" class="col-md-6" id ="map" style ="height: 80vh; width: 50vw"></div>
+                    <div id ="map" class="col-md-6" id ="map" style ="height: 80vh; width: 50vw">
+                        <p style="float: left;">Displaying data from: </p>
+                    <p id="handle1" style="width: 20%; margin: 5px; float: left;"></p>
+                    <p style="float: left";>To: </p>
+                    <p id="handle2" style="width: 20%; margin: 5px; float: left;"></p>
+                    </div>
                     <div id "right" class="col-md-6" style="float: right;"></div>
                 </div>
                 <div class="col" style ="height: 10%; width: 100%; text-align: center;">
@@ -83,13 +87,14 @@
         <script src="js/vendor/topojson.v1.min.js"></script>
         <script src="js/vendor/underscore-min.js"></script>
         <script src="js/vendor/colorbrewer.js"></script>
-        <script src="js/vendor/nouislider.js"></script>
+        <script src="js/vendor/nouislider.min.js"></script>
 
         <!--modules js-->
         <script src="js/kmeans.js"></script>
         <script src="js/map.js"></script>
         <script src="js/slider.js"></script>
         <script src="js/main.js"></script>
-
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVsS17iYm8q2_X7kuhuXGntjeHIjecq1k&libraries=geometry,visualization"></script>
+        <!-- &libraries=geometry,visualization -->
 
 </html>

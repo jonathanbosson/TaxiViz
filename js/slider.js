@@ -2,7 +2,7 @@ function slider(data) {
 	console.log('Creating slider');
 
 	var format = d3.time.format.utc("%Y-%m-%dT%H%M%S");
-	d3.time.format.utc("data/test.csv");
+	//d3.time.format.utc("data/test_small.csv");
 	//var minDate = new Date('2013-03-01');
 	//var maxDate = new Date('2013-03-31');  
 	var minDate = new Date(d3.min(data.map(function(d) { return d.date; })));
@@ -11,9 +11,8 @@ function slider(data) {
 	var handleBottom = maxDate;//new Date('2013-03-20');
 
 	var dateValues = [
-		
-		document.getElementById('handle2'),
-		document.getElementById('handle1')
+		document.getElementById('handle1'),
+		document.getElementById('handle2')
 	];
 
 	var weekdays = [
@@ -40,8 +39,15 @@ function slider(data) {
 		},
 		start: [handleTop.getTime(), handleBottom.getTime()]
 	});
-	slider.noUiSlider.on('update', function( values, handle ){
+	
+	//Set legend to min/max dates
+	dateValues[0].innerHTML = formatDate(minDate);
+	dateValues[1].innerHTML = formatDate(maxDate);
+	
+
+	slider.noUiSlider.on('change', function( values, handle ){
 		map1.filterTime(values);
+		//update legends
 		dateValues[handle].innerHTML = formatDate(new Date(+values[handle]));
 	});
 
