@@ -139,12 +139,8 @@ function map(data) {
     //Calls k-means function and changes the color of the points
     this.cluster = function () {
         var k = 4;
-        console.log('orig. Data:', data);
         //var kmeansRes = kmeans(kmeansArray,k);
         var opticsRes = optics(data,0.1, 2);
-        
-        //data[1].cluster = 2;
-		//data[4].cluster = 2;
         
         //initialize the cluster colors
 		// add index to properties, and check if kmeansRes.id is same as data id.
@@ -155,9 +151,7 @@ function map(data) {
 			}else
 				cc[i] = "orange";
 		});
-		console.log(cc);
-		/*d3.selectAll(".point")
-		.style("fill", function(d, i){ return cc[i]; });*/
+		
 		svg.selectAll("circle").data(data).style("fill", function(d) {
             if(d.cluster != undefined)
 				return color[d.cluster];

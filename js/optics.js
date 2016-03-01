@@ -12,12 +12,11 @@ var data;
 function optics(incomingdata, eps, minPoints) {	
 	// A point p is a core point if at least minPoints
 	// are found within its eps-neighborhood
+	
 	data = incomingdata;
 	var q;
 	var N;
 	var cluster = 0;
-	
-	console.log(dist(data[4], data[5]));
 	
 	// Initialize data
 	data.forEach(function(d,i) {
@@ -30,13 +29,12 @@ function optics(incomingdata, eps, minPoints) {
 	data.forEach(function(p) {
 		if(!p.processed){
 			N = getNeighbors(p, eps); //Finds the neighbors of p
-			console.log('neig',N.toArray());
+			
 			p.processed = true;
 			
 			if(coreDistance(p, eps, minPoints) !== undefined){
 				//seeds.clear(); //clear priority queue
 				update(N, p, seeds, eps, minPoints); //Update priority queue
-				console.log('s',seeds.toArray(), seeds.peek());
 				while(!seeds.isEmpty()){
 					q = seeds.removeRoot();
 					if(!q.processed) {
@@ -53,8 +51,6 @@ function optics(incomingdata, eps, minPoints) {
 		}
 		cluster++;
 	});
-	
-	console.log(data);
 }
 
 
@@ -73,7 +69,6 @@ function update(N, p, seeds, eps, minPoints) {
 					//move up this element in queue
 					o.reachDist = newReachDist;
 					moveUp(o, newReachDist);
-					console.log('moved up', seeds.toArray());
 				}
 			}
 		}
@@ -120,7 +115,6 @@ function dist(b1, b2) {
 
 // minHeap compare function
 function compare(a, b) {
-	console.log('used', a.reachDist, b.reachDist);
 	if (a.reachDist === undefined && b.reachDist === undefined)
 		return 0; //Equals
 	else if (a.reachDist === undefined && b.reachDist !== undefined)
@@ -136,23 +130,15 @@ function compare(a, b) {
 }
 
 function moveUp(a, newReachDist) {
-	console.log('bf', seeds.toArray());
 	var tempSeeds = seeds.toArray();
 	seeds.clear();
-	console.log('empty?',seeds.toArray());
 	
-	//for(var i = 0; i < tempSeeds.length; i++) {
 	tempSeeds.forEach(function(d) {
-		console.log('movvv');
 		seeds.add(d);
 	});
 	
 	if(tempSeeds.length === 0 )
 		seeds.add(a);
-		
-	console.log('af', seeds.toArray());
-	//while(!seeds.isEmpty())
-		//console.log('ee', seeds.removeRoot());
 }
 
 
