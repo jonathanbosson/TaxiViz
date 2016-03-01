@@ -198,11 +198,13 @@ function map(data) {
     var dateRange = new Array(minDate.getTime(), maxDate.getTime());
     var googlemap;
     google.maps.event.addDomListener(window, 'load', initMap(googleStyle));
-
     var heatmap = new google.maps.visualization.HeatmapLayer({
       dissipating: true,
       maxIntensity: 500
     });
+    setGradient();
+    setLegendGradient();
+    setLegendLabels();
     dataFeed_callback(geoData, dateRange);
     console.log("Initiated Google map");
 
@@ -290,5 +292,76 @@ function map(data) {
             });
         });
         return data;
+    }
+
+
+    function setGradient() {
+      gradient = [
+        /*'rgba(0, 255, 255, 0)',
+        'rgba(0, 255, 255, 1)',
+        'rgba(0, 191, 255, 1)',
+        'rgba(0, 127, 255, 1)',
+        'rgba(0, 63, 255, 1)',
+        'rgba(255, 255, 0, 1)',
+        'rgba(223, 223, 0, 1)',
+        'rgba(0, 0, 191, 1)',
+        'rgba(0, 0, 159, 1)',
+        'rgba(0, 0, 127, 1)',
+        'rgba(63, 0, 91, 1)',
+        'rgba(127, 0, 63, 1)',
+        'rgba(191, 0, 31, 1)',
+        'rgba(255, 0, 0, 1)'*/
+
+        'rgba(0, 255, 255, 0)',
+        'rgba(100, 100, 255, 1)',
+        'rgba(255, 30, 30, 1)',
+      ]
+      heatmap.set('gradient', gradient);
+    }
+
+    function setLegendGradient() {
+        var gradientCss = '(left';
+        for (var i = 0; i < gradient.length; ++i) {
+            gradientCss += ', ' + gradient[i];
+        }
+        gradientCss += ')';
+        
+        $('#legendGradient').css('background', '-webkit-linear-gradient' + gradientCss);
+        $('#legendGradient').css('background', '-moz-linear-gradient' + gradientCss);
+        $('#legendGradient').css('background', '-o-linear-gradient' + gradientCss);
+        $('#legendGradient').css('background', 'linear-gradient' + gradientCss);
+    }
+
+    function setLegendLabels() {
+        google.maps.event.addListenerOnce(map, 'tilesloaded', function() {
+            var maxIntensity = heatmap['gm_bindings_']['data'][158]['kd']['D'];
+            var legendWidth = $('#legendGradient').outerWidth();
+            
+            for (var i = 0; i <= maxIntensity; ++i) {
+                var offset = i * legendWidth / maxIntensity;
+                if (i > 0 && i < maxIntensity) {
+                    offset -= 0.5;
+                } else if (i == maxIntensity) {
+                    offset -= 1;
+                }
+                
+                $('#legend').append($('<div>').css({
+                    'position': 'absolute',
+                    'left': offset + 'px',
+                    'top': '15px',
+                    'width': '1px',
+                    'height': '3px',
+                    'background': 'black'
+                }));
+                $('#legend').append($('<div>').css({
+                    'position': 'absolute',
+                    'left': (offset - 5) + 'px',
+                    'top': '18px',
+                    'width': '10px',
+                    'text-align': 'center',
+                    'font-size': '0.8em',
+                }).html(i));
+            }
+        });
     }
 }

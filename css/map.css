@@ -1,28 +1,25 @@
-.country{ fill: rgb(0, 75, 151); }
-
-.buildings {
-	fill: steelblue;
-}
-
-.roads {
-	fill: none;
-	stroke: orange;
-	stroke-width: 0.3px;
-}
-
-.point {
-    fill: red;
-    /*stroke: #FFF;*/
-}
-
 .hidden {
     display: none;
 }
 
-.map {
+#map {
 	left: 0;
     right: 0;
     margin-left: auto;
     margin-right: auto;
     position: absolute;
+    border: 1px solid black;
+}
+
+#legend {
+    position: relative;
+    width: 60%;
+    height: 30px;
+    margin-left: -30%;
+    margin-top: 10px;
+}
+#legendGradient {
+    width: 100%;
+    height: 15px;
+    border: 1px solid black;
 }
