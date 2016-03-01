@@ -44,7 +44,8 @@ function slider(data) {
 	slider.noUiSlider.on('change', function( values, handle ){
 		map1.filterTime(values);
 		//update legends
-		dateValues[handle].innerHTML = formatDate(new Date(+values[handle]));
+		dateValues[0].innerHTML = formatDate(new Date(+values[0]));
+		dateValues[1].innerHTML = formatDate(new Date(+values[1]));
 	});
 
 
