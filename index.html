@@ -15,11 +15,13 @@
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/colorbrewer.css">
+        <link rel="stylesheet" href="css/nouislider.css">
+        <link rel="stylesheet" href="css/nouislider.tooltips.css">
         <link rel="stylesheet" href="css/main.css">
 
         <!--modules css-->
-        <link rel="stylesheet" href="css/area.css">
         <link rel="stylesheet" href="css/map.css">
+        <link rel="stylesheet" href="css/slider.css">
 
     </head>
 
@@ -55,20 +57,13 @@
                 <br><br><br>
 
                 <div class="row">
-                    <div class="col-md-6" id ="area" style ="height: 90vh"></div>
-                    <div class="col-md-6" id ="map" style ="height: 90vh">
-                       <p>
-                            <label>
-                                Magnitude > <span id="slider-value">4</span>
-                            </label>
-                            <input type="range" min="4" max="7" value="4" id="slider">
-                            <input type="number" id="k" value="4" style="float:right;">
-                            <input type="button" value="cluster" onclick="map1.cluster()" style="float:right;"/>
-                            <label id="info" style="float:right;"></label>
-                        </p>
-
+                    <div class="col-md-6" id ="area" style ="height: 90vh">
+                        <!--<input type="number" id="handle1" style="float:right;">
+                        <input type="number" id="handle2" style="float:right;">-->
+                        <div id="sliderContainer" style="width: 20px; height: 80vh; 
+                        margin: 2% 10% 2% 10%;"></div>
                     </div>
-
+                    <div class="col-md-6" id ="map" style ="height: 90vh"></div>
                 </div>
             </div>
         </div>
@@ -84,13 +79,14 @@
         <script src="js/vendor/colorbrewer.js"></script>
         <!--buckets, JavaScript library including minHeap https://github.com/mauriciosantos/Buckets-JS -->
         <script src="js/vendor/buckets.min.js"></script>
+        <script src="js/vendor/nouislider.min.js"></script>
 
-        <!--modules js-->
-        <script src="js/kmeans.js"></script>
+		<!--modules js-->
         <script src="js/optics.js"></script>
-        <script src="js/area.js"></script>
         <script src="js/map.js"></script>
+        <script src="js/slider.js"></script>
         <script src="js/main.js"></script>
-
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVsS17iYm8q2_X7kuhuXGntjeHIjecq1k&libraries=geometry,visualization"></script>
+        <!-- &libraries=geometry,visualization -->
 
 </html>

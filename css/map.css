@@ -1,7 +1,17 @@
 .country{ fill: rgb(0, 75, 151); }
 
+.buildings {
+	fill: steelblue;
+}
+
+.roads {
+	fill: none;
+	stroke: orange;
+	stroke-width: 0.3px;
+}
+
 .point {
-    fill: orange;
+    fill: red;
     /*stroke: #FFF;*/
 }
 
