@@ -27,6 +27,11 @@ html,body {
     font-size: 1em;
     line-height: 1.4;
 }
+legend, label{
+    color: #595959;
+    font-weight:normal;
+    margin-top: 2%;
+}
 
 
 #k{
