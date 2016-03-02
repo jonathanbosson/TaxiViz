@@ -1,5 +1,4 @@
 function map(data) {
-	var daterange;
 	var googleStyle = 
     [
         {
@@ -209,7 +208,7 @@ function map(data) {
 
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
-    	daterange = value;
+    	dateRange = value;
         dataFeed_callback(geoData, value);
     };
 
@@ -221,15 +220,15 @@ function map(data) {
         
         for (var i = 0, features; features = geoData.features[i]; i++) {
             var date = new Date(features.properties.date);
-            if (features.geometry && date.getTime() >= daterange[0] && date.getTime() <= daterange[1]) {
+            if (features.geometry && date.getTime() >= dateRange[0] && date.getTime() <= dateRange[1]) {
                 filteredData.push(features);
             }
         }
         
-        console.log(filteredData);
+        console.log(filteredData, filteredData.length, radius, minPoints);
         
-        var opticsRes = optics(filteredData,radius, minPoints);
-        console.log(opticsRes);
+        var opticsRes = optics(filteredData, radius, minPoints);
+        console.log(opticsRes, opticsRes.length);
         //initialize the cluster colors
 		// add index to properties, and check if kmeansRes.id is same as data id.
 		
