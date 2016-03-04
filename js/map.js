@@ -195,6 +195,7 @@ function map(data) {
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
     console.log("geoData stored")
 
+    var opticsRes;
     var dateRange = new Array(minDate.getTime(), maxDate.getTime());
     var googlemap;
     google.maps.event.addDomListener(window, 'load', initMap(googleStyle));
@@ -213,38 +214,27 @@ function map(data) {
         dataFeed_callback(geoData, value);
     };
 
-    //Calls cluster function and changes the color of the points
-    this.cluster = function () {
-        var k = 4;
-        var opticsRes = optics(data,0.1, 2);
-        
-        //initialize the cluster colors
-		// add index to properties, and check if kmeansRes.id is same as data id.
-		
-		data.forEach(function(d, i) {
-			if (d.cluster !== undefined) {
-				cc[i] = color[d.cluster];
-			}else
-				cc[i] = "orange";
-		});
-		
-		svg.selectAll("circle").data(data).style("fill", function(d) {
-            if(d.cluster != undefined)
-				return color[d.cluster];
-			else
-				return 'orange';
+    this.remove = function() {
+        googlemap.data.forEach(function(opticsRes) {
+            googlemap.data.remove(opticsRes);
         });
     };
 
-    function initMap(googleStyle){
-        googlemap = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 59.3279, lng: 18.0658},
-            zoom: 12,
-            styles: googleStyle,
-            disableDoubleClickZoom: true
-        });
-
-        /*     
+    //Calls cluster function and changes the color of the points
+    this.cluster = function () {
+        var radius = 0.008992806 * document.getElementById("radius").value;
+        var minPoints = document.getElementById("minpoints").value;
+        var filteredData = [];
+        
+        for (var i = 0, features; features = geoData.features[i]; i++) {
+            var date = new Date(features.properties.date);
+            if (features.geometry && date.getTime() >= dateRange[0] && date.getTime() <= dateRange[1]) {
+                filteredData.push(features);
+            }
+        }
+        
+        opticsRes = {type: "FeatureCollection", features: optics(filteredData, radius, minPoints)};
+        console.log(opticsRes);
         googlemap.data.setStyle(function() {
             return {
               icon: {
@@ -257,21 +247,33 @@ function map(data) {
                     }
             };
         });
-        */
+
+        googlemap.data.addGeoJson(opticsRes);
+    };
+
+    function initMap(googleStyle){
+        googlemap = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 59.3279, lng: 18.0658},
+            zoom: 12,
+            styles: googleStyle,
+            disableDoubleClickZoom: true
+        });
     }
 
     function dataFeed_callback(geoData, dateRange) {
+        var counter = 0;
         var heatmapData = new google.maps.MVCArray();
         for (var i = 0, features; features = geoData.features[i]; i++) {
             var date = new Date(features.properties.date);
             if (features.geometry && date.getTime() >= dateRange[0] && date.getTime() <= dateRange[1]) {
                 heatmapData.push(new google.maps.LatLng(features.geometry.coordinates[1], features.geometry.coordinates[0]));
+                counter++;
             }
         }
         heatmap.data = heatmapData;
         heatmap.maxIntensity = Math.floor(255410*(dateRange[1] - dateRange[0]) / minDate);
         console.log(heatmap);
-
+        console.log(counter, "datapoints considered");
         heatmap.setMap(googlemap);
     }
 
@@ -297,21 +299,6 @@ function map(data) {
 
     function setGradient() {
       gradient = [
-        /*'rgba(0, 255, 255, 0)',
-        'rgba(0, 255, 255, 1)',
-        'rgba(0, 191, 255, 1)',
-        'rgba(0, 127, 255, 1)',
-        'rgba(0, 63, 255, 1)',
-        'rgba(255, 255, 0, 1)',
-        'rgba(223, 223, 0, 1)',
-        'rgba(0, 0, 191, 1)',
-        'rgba(0, 0, 159, 1)',
-        'rgba(0, 0, 127, 1)',
-        'rgba(63, 0, 91, 1)',
-        'rgba(127, 0, 63, 1)',
-        'rgba(191, 0, 31, 1)',
-        'rgba(255, 0, 0, 1)'*/
-
         'rgba(0, 255, 255, 0)',
         'rgba(100, 100, 255, 1)',
         'rgba(255, 30, 30, 1)',
