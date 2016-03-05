@@ -211,6 +211,7 @@ function map(data) {
 
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
+    	dateRange = value;
         dataFeed_callback(geoData, value);
     };
 
@@ -218,11 +219,12 @@ function map(data) {
         googlemap.data.forEach(function(opticsRes) {
             googlemap.data.remove(opticsRes);
         });
-    };
+    }
 
     //Calls cluster function and changes the color of the points
     this.cluster = function () {
-        var radius = 0.008992806 * document.getElementById("radius").value;
+        var cartRadius = document.getElementById("radius").value;
+        var radius = 0.008992806 * cartRadius;
         var minPoints = document.getElementById("minpoints").value;
         var filteredData = [];
         
@@ -232,16 +234,19 @@ function map(data) {
                 filteredData.push(features);
             }
         }
+
+        console.log(filteredData, filteredData.length, radius, minPoints);
         
-        opticsRes = {type: "FeatureCollection", features: optics(filteredData, radius, minPoints)};
+        opticsRes = {type: "FeatureCollection", features: geoCluster(optics(filteredData, radius, minPoints))};
         console.log(opticsRes);
-        googlemap.data.setStyle(function() {
+        googlemap.data.setStyle(function(feature) {
+            var mag = feature.getProperty('amount');
             return {
               icon: {
                         path: google.maps.SymbolPath.CIRCLE,
                         fillColor: 'red',
-                        fillOpacity: .2,
-                        scale: 6,
+                        fillOpacity: .3,
+                        scale: cartRadius*(mag/minPoints),
                         strokeColor: 'white',
                         strokeWeight: .5
                     }
@@ -290,9 +295,28 @@ function map(data) {
                 "properties": {
                     "id" : Number(d.id),
                     "date" : d.date,
+                    "cluster" : undefined,
                 }
             });
         });
+        return data;
+    }
+
+    //Formats the data in a feature collection
+    function geoCluster(array) {
+        var data = [];
+        for (var key in array) {
+            data.push(
+            { 
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point", 
+                    "coordinates": [Number(array[key].x), Number(array[key].y)]},
+                "properties": {
+                    "amount" : Number(array[key].amount)
+                }
+            });
+        }
         return data;
     }
 
