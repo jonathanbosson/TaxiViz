@@ -195,6 +195,7 @@ function map(data) {
     var geoData = {type: "FeatureCollection", features: geoFormat(data)};
     console.log("geoData stored")
 
+    var opticsRes;
     var dateRange = new Array(minDate.getTime(), maxDate.getTime());
     var googlemap;
     google.maps.event.addDomListener(window, 'load', initMap(googleStyle));
@@ -210,30 +211,49 @@ function map(data) {
 
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
+    	dateRange = value;
         dataFeed_callback(geoData, value);
     };
 
+    this.remove = function() {
+        googlemap.data.forEach(function(opticsRes) {
+            googlemap.data.remove(opticsRes);
+        });
+    }
+
     //Calls cluster function and changes the color of the points
     this.cluster = function () {
-        var k = 4;
-        var opticsRes = optics(data,0.1, 2);
+        var cartRadius = document.getElementById("radius").value;
+        var radius = 0.008992806 * cartRadius;
+        var minPoints = document.getElementById("minpoints").value;
+        var filteredData = [];
         
-        //initialize the cluster colors
-		// add index to properties, and check if kmeansRes.id is same as data id.
-		
-		data.forEach(function(d, i) {
-			if (d.cluster !== undefined) {
-				cc[i] = color[d.cluster];
-			}else
-				cc[i] = "orange";
-		});
-		
-		svg.selectAll("circle").data(data).style("fill", function(d) {
-            if(d.cluster != undefined)
-				return color[d.cluster];
-			else
-				return 'orange';
+        for (var i = 0, features; features = geoData.features[i]; i++) {
+            var date = new Date(features.properties.date);
+            if (features.geometry && date.getTime() >= dateRange[0] && date.getTime() <= dateRange[1]) {
+                filteredData.push(features);
+            }
+        }
+
+        console.log(filteredData, filteredData.length, radius, minPoints);
+        
+        opticsRes = {type: "FeatureCollection", features: geoCluster(optics(filteredData, radius, minPoints))};
+        console.log(opticsRes);
+        googlemap.data.setStyle(function(feature) {
+            var mag = feature.getProperty('amount');
+            return {
+              icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: 'red',
+                        fillOpacity: .3,
+                        scale: cartRadius*(mag/minPoints),
+                        strokeColor: 'white',
+                        strokeWeight: .5
+                    }
+            };
         });
+
+        googlemap.data.addGeoJson(opticsRes);
     };
 
     function initMap(googleStyle){
@@ -243,35 +263,22 @@ function map(data) {
             styles: googleStyle,
             disableDoubleClickZoom: true
         });
-
-        /*     
-        googlemap.data.setStyle(function() {
-            return {
-              icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        fillColor: 'red',
-                        fillOpacity: .2,
-                        scale: 6,
-                        strokeColor: 'white',
-                        strokeWeight: .5
-                    }
-            };
-        });
-        */
     }
 
     function dataFeed_callback(geoData, dateRange) {
+        var counter = 0;
         var heatmapData = new google.maps.MVCArray();
         for (var i = 0, features; features = geoData.features[i]; i++) {
             var date = new Date(features.properties.date);
             if (features.geometry && date.getTime() >= dateRange[0] && date.getTime() <= dateRange[1]) {
                 heatmapData.push(new google.maps.LatLng(features.geometry.coordinates[1], features.geometry.coordinates[0]));
+                counter++;
             }
         }
         heatmap.data = heatmapData;
         heatmap.maxIntensity = Math.floor(255410*(dateRange[1] - dateRange[0]) / minDate);
         console.log(heatmap);
-
+        console.log(counter, "datapoints considered");
         heatmap.setMap(googlemap);
     }
 
@@ -288,30 +295,34 @@ function map(data) {
                 "properties": {
                     "id" : Number(d.id),
                     "date" : d.date,
+                    "cluster" : undefined,
                 }
             });
         });
         return data;
     }
 
+    //Formats the data in a feature collection
+    function geoCluster(array) {
+        var data = [];
+        for (var key in array) {
+            data.push(
+            { 
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point", 
+                    "coordinates": [Number(array[key].x), Number(array[key].y)]},
+                "properties": {
+                    "amount" : Number(array[key].amount)
+                }
+            });
+        }
+        return data;
+    }
+
 
     function setGradient() {
       gradient = [
-        /*'rgba(0, 255, 255, 0)',
-        'rgba(0, 255, 255, 1)',
-        'rgba(0, 191, 255, 1)',
-        'rgba(0, 127, 255, 1)',
-        'rgba(0, 63, 255, 1)',
-        'rgba(255, 255, 0, 1)',
-        'rgba(223, 223, 0, 1)',
-        'rgba(0, 0, 191, 1)',
-        'rgba(0, 0, 159, 1)',
-        'rgba(0, 0, 127, 1)',
-        'rgba(63, 0, 91, 1)',
-        'rgba(127, 0, 63, 1)',
-        'rgba(191, 0, 31, 1)',
-        'rgba(255, 0, 0, 1)'*/
-
         'rgba(0, 255, 255, 0)',
         'rgba(100, 100, 255, 1)',
         'rgba(255, 30, 30, 1)',
