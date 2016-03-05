@@ -1,0 +1,19 @@
+ANVÄNDARTEST - TAXIVIZ
+Det här är ett användartest på applikationen TaxiViz i syftet att utvärdera intuivitet. 
+
+Du kommer nu få se en applikation som visar data över var taxibilar blivit hyrda. Jag kommer att ställa frågor under tiden om vad du tänker, eller be dig att utföra vissa uppgifter där du får berätta hur du tänker. 
+
+1. Du vill endast se taxidata från första halvan av Mars. Kan du göra det?
+- Fungerar det som du förväntade dig? 
+
+2. Klustrera datan med den förvalda inputen. Vad tror du visas på kartan nu?
+- Vad tror du att inputen betyder?
+
+3. Är den grafiska profilen tilltalande?
+- Vad drar mest fokus? Är det rimligt? 
+
+4. Har du några förbättringsförslag?
+
+5. Övriga synpunkter
+
+

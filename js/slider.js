@@ -40,12 +40,14 @@ function slider(data) {
 	dateValues[0].innerHTML = formatDate(minDate);
 	dateValues[1].innerHTML = formatDate(maxDate);
 	
-
-	slider.noUiSlider.on('change', function( values, handle ){
-		map1.filterTime(values);
+	slider.noUiSlider.on('update', function( values, handle ){
 		//update legends
 		dateValues[0].innerHTML = formatDate(new Date(+values[0]));
 		dateValues[1].innerHTML = formatDate(new Date(+values[1]));
+	});
+
+	slider.noUiSlider.on('change', function( values, handle ){
+		map1.filterTime(values);
 	});
 
 
