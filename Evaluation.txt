@@ -6,7 +6,7 @@ Du kommer nu få se en applikation som visar data över var taxibilar blivit hyr
 1. Du vill endast se taxidata från första halvan av Mars. Kan du göra det?
 - Fungerar det som du förväntade dig? 
 
-2. Klustrera datan med den förvalda inputen. Vad tror du visas på kartan nu?
+2. Välj en tidsperiod och klustrera. Vad tror du visas på kartan nu?
 - Vad tror du att inputen betyder?
 
 3. Är den grafiska profilen tilltalande?

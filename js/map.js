@@ -237,14 +237,14 @@ function map(data) {
 
         console.log(filteredData, filteredData.length, radius, minPoints);
         if(filteredData.length > 10000)
-            swal("Please select a smaller set");
+            swal("Please select a smaller time period");
 
         else {
                 swal({  title: "Clustering may take a few minutes",   
                         text: "Maybe it's time for a coffee break?",   
                         type: "warning",   
                         showCancelButton: true, 
-                        closeOnConfirm: true,  
+                        closeOnConfirm: false,  
                         confirmButtonColor: "#3385ff",   
                         confirmButtonText: "Start",   
                          }, 
@@ -265,6 +265,7 @@ function map(data) {
                                     };
                                 });
                                 googlemap.data.addGeoJson(opticsRes);
+                                swal("Done!");
                         });
 
             

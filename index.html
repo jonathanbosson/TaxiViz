@@ -69,14 +69,14 @@
                         <div id ="map" style ="height: 80vh; width: 50vw"></div>
                         <div id="legendDiv"><div id="legend"><div id="legendGradient"></div></div></div>
                     </div>
-                    <div id="right" class="col-md-6" style="width: 20vw; padding-right: 3vw;">
+                    <div id="right" class="col-md-6" style="width: 25vw; padding-right: 3vw;">
 			        	<form "pure-form pure-form-stacked" style="margin-left: 10px">
-                                <legend>Cluster taxi cars</legend>
+                                <legend>Highlight popular spots</legend>
                                 
-                                <label for="radius">Cluster radius in km: </label>
+                                <label for="radius">Within a radius of (km): </label>
         			        	<input id="radius" type="number" min="0.5" max="3" step="0.1" value="0.5"/>
                                 
-                                <label for="radius"> Minimum points in cluster: </label>
+                                <label for="radius"> With minimum taxis: </label>
                                 <input id="minpoints" type="number" min="70" max="150" step="1" value="70" style="float: left"/>
                                 
                                 <button class="pure-button pure-button-primary" onclick="map1.cluster()" type="button" style="margin-top: 5px; float: left;">Cluster</button>

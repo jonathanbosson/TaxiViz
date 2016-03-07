@@ -11,7 +11,7 @@ d3.csv("data/taxidata_preprocess.csv", function (data) {
 function getInfo()
 {
 	swal("Where should I park my taxi?", 
-		"TaxiViz shows popular spots for grabbing a taxi in Stockholm. The data can be filtered over time with the slider in order to compare different time periods. With the cluster function you are able to see the most popular places to grab a taxi.");
+		"TaxiViz shows popular spots for grabbing a taxi in Stockholm. The data can be filtered over time with the slider in order to compare different time periods. \n \n With the cluster function you are able to see the most popular places to grab a taxi. This function will highligth popular spots if at least the minimum number of taxi cars are found within a certain radius.");
 }
 /*
 
