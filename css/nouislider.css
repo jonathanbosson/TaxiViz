@@ -74,9 +74,9 @@
 }
 .noUi-vertical .noUi-handle {
 	width: 28px;
-	height: 34px;
+	height: 10px;
 	left: -6px;
-	top: -17px;
+	top: -5px;
 }
 
 /* Styling;
@@ -128,6 +128,7 @@
 
 /* Handle stripes;
  */
+ /*
 .noUi-handle:before,
 .noUi-handle:after {
 	content: "";
@@ -150,9 +151,9 @@
 	top: 14px;
 }
 .noUi-vertical .noUi-handle:after {
-	top: 17px;
+	top: 5px;
 }
-
+*/
 /* Disabled state;
  */
 [disabled].noUi-connect,

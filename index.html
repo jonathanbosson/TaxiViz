@@ -74,10 +74,10 @@
                                 <legend>Cluster taxi cars</legend>
                                 
                                 <label for="radius">Cluster radius in km: </label>
-        			        	<input id="radius" type="number" min="0" max="10" step="0.1" value="0.1"/>
+        			        	<input id="radius" type="number" min="0.5" max="3" step="0.1" value="0.5"/>
                                 
                                 <label for="radius"> Minimum points in cluster: </label>
-                                <input id="minpoints" type="number" min="0" max="100000" step="1" value="1" style="float: left"/>
+                                <input id="minpoints" type="number" min="70" max="150" step="1" value="70" style="float: left"/>
                                 
                                 <button class="pure-button pure-button-primary" onclick="map1.cluster()" type="button" style="margin-top: 5px; float: left;">Cluster</button>
                                 <button class="pure-button pure-button-primary" onclick="map1.remove()" type="button" style="margin-top: 5px; margin-left: 5px; float: left;">Remove</button>

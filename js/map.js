@@ -236,24 +236,40 @@ function map(data) {
         }
 
         console.log(filteredData, filteredData.length, radius, minPoints);
-        
-        opticsRes = {type: "FeatureCollection", features: geoCluster(optics(filteredData, radius, minPoints))};
-        console.log(opticsRes);
-        googlemap.data.setStyle(function(feature) {
-            var mag = feature.getProperty('amount');
-            return {
-              icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        fillColor: 'red',
-                        fillOpacity: .3,
-                        scale: cartRadius*(mag/minPoints),
-                        strokeColor: 'white',
-                        strokeWeight: .5
-                    }
-            };
-        });
+        if(filteredData.length > 10000)
+            swal("Please select a smaller set");
 
-        googlemap.data.addGeoJson(opticsRes);
+        else {
+                swal({  title: "Clustering may take a few minutes",   
+                        text: "Maybe it's time for a coffee break?",   
+                        type: "warning",   
+                        showCancelButton: true, 
+                        closeOnConfirm: true,  
+                        confirmButtonColor: "#3385ff",   
+                        confirmButtonText: "Start",   
+                         }, 
+                            function(){  
+                                opticsRes = {type: "FeatureCollection", features: geoCluster(optics(filteredData, radius, minPoints))};
+                                console.log(opticsRes);
+                                googlemap.data.setStyle(function(feature) {
+                                    var mag = feature.getProperty('amount');
+                                    return {
+                                      icon: {
+                                                path: google.maps.SymbolPath.CIRCLE,
+                                                fillColor: 'red',
+                                                fillOpacity: .3,
+                                                scale: cartRadius*(mag/minPoints),
+                                                strokeColor: 'white',
+                                                strokeWeight: .5
+                                            }
+                                    };
+                                });
+
+                        });
+
+            googlemap.data.addGeoJson(opticsRes);
+        }
+        
     };
 
     function initMap(googleStyle){
