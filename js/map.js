@@ -258,16 +258,16 @@ function map(data) {
                                                 path: google.maps.SymbolPath.CIRCLE,
                                                 fillColor: 'red',
                                                 fillOpacity: .3,
-                                                scale: cartRadius*(mag/minPoints),
+                                                scale: 60*cartRadius*(1.5-minPoints/mag),
                                                 strokeColor: 'white',
                                                 strokeWeight: .5
                                             }
                                     };
                                 });
-
+                                googlemap.data.addGeoJson(opticsRes);
                         });
 
-            googlemap.data.addGeoJson(opticsRes);
+            
         }
         
     };
