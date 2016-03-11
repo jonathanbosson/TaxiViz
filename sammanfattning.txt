@@ -1,0 +1,13 @@
+Sammanfattning av användartest
+
+Att filtrera på tid fungerade som förväntat.
+
+Det var svårt att välja ett tillräckligt litet dataset och veta hur litet det behöver vara för att kunna klustra. Det var också svårt att uppfatta vad det var som behövde minskas för att få klustra.
+
+
+Klustreringen fungerar som förväntat, dock svårt att veta när klustreringen är klar och vad som har förändrats.
+Vissa klusterpunkter var svåra att se.
+
+Den grafiska profilen är tilltalande och det är bra och rimligt att det är kartan som tar fokus. Den skulle kunna vara lite större för att ta bort döyta.
+
+Sidan skulle kunna bli bättre med lite mer feedback i form av text och siffror för att till exempel se vad klusterpunkterna betyder och representerar (tex antal bilar). En indikator till färgskalan behövs för att se vad färgskalan betyder.
